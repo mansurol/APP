@@ -107,7 +107,7 @@ const Home = () => {
             <Text style={styles.cardText}>Teacher{"\n"}Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} onPress={() => handlePress("")}>
+          <TouchableOpacity style={styles.card} onPress={() => handlePress("https://easyresult.easytechsolution.org/teacher_staff.php")}>
             <Text style={styles.cardText}>Teacher &{"\n"}Staff</Text>
           </TouchableOpacity>
 
