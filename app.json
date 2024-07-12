@@ -18,10 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#060D55"
-      }
+      },
+      "package": "com.mansurol_islam.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7957b4e4-d1e8-462b-96e3-aee1b8eb17ee"
+      }
     }
   }
 }

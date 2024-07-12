@@ -29,24 +29,25 @@ const Home = () => {
       <StatusBar barStyle="light-content" backgroundColor="#11025F" />
       {!webViewUrl ? (
         <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.noticeBoardCard}
-            onPress={() => handlePress("https://bpatcsc.org/pages/notice")}
-          >
-            <Text style={styles.noticeBoardText}>Notice Board</Text>
-          </TouchableOpacity>
           {/* Card 3: Online Payment */}
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
               handlePress(
-                "https://easyresult.easytechsolution.org/student_payments_view.php"
+                "https://easyresult.easytechsolution.org/online_payments.php"
               )
             }
           >
             <Text style={styles.cardText}>Online{"\n"}Payment</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.card} onPress={() => handlePress("")}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              handlePress(
+                "https://easyresult.easytechsolution.org/admission/admission_school.php"
+              )
+            }
+          >
             <Text style={styles.cardText}>Admission{"\n"}Form</Text>
           </TouchableOpacity>
 
@@ -107,7 +108,14 @@ const Home = () => {
             <Text style={styles.cardText}>Teacher{"\n"}Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} onPress={() => handlePress("https://easyresult.easytechsolution.org/teacher_staff.php")}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              handlePress(
+                "https://easyresult.easytechsolution.org/teacher_staff.php"
+              )
+            }
+          >
             <Text style={styles.cardText}>Teacher &{"\n"}Staff</Text>
           </TouchableOpacity>
 
@@ -132,7 +140,19 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Career{"\n"}Opportunities</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => handlePress("https://bpatcsc.org/pages/notice")}
+          >
+            <Text style={styles.noticeBoardText}>Notice{"\n"}Board</Text>
+          </TouchableOpacity>
 
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => handlePress("https://www.bpatcsc.org/")}
+          >
+            <Text style={styles.noticeBoardText}>Details{"\n"}More</Text>
+          </TouchableOpacity>
           {/* New Card: Notice Board */}
         </View>
       ) : (
