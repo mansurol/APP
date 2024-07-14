@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "122474233674",
+    "project_id": "easyresult-cda44",
+    "storage_bucket": "easyresult-cda44.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122474233674:android:fca1ef77a565fe2e2a0bb3",
+        "android_client_info": {
+          "package_name": "com.easyresultbd.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtW9RzYTQT9uQ2Po-0nzg4WHFrPbb_JCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

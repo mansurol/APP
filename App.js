@@ -5,9 +5,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { enableScreens } from "react-native-screens";
 import TabNav from "./Navigation/TabNav";
+import onMessageReceived from "./Src/utils/notifeeHandler";
+import messaging from "@react-native-firebase/messaging";
 
 SplashScreen.preventAutoHideAsync();
 enableScreens();
+
+messaging().setBackgroundMessageHandler(onMessageReceived);
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -28,6 +32,12 @@ export default function App() {
     }
 
     prepare();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(onMessageReceived);
+
+    return unsubscribe;
   }, []);
 
   return (

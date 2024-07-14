@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "app",
+    "name": "Easy Rresult",
     "slug": "app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,15 +19,17 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#060D55"
       },
-      "package": "com.mansurol_islam.app"
+      "package": "com.easyresultbd.app",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "7957b4e4-d1e8-462b-96e3-aee1b8eb17ee"
+        "projectId": "13dc8fb5-3c0d-4038-9c54-085b2d023f62"
       }
-    }
+    },
+    "plugins": []
   }
 }
