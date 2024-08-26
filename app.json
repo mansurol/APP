@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "Easy Rresult",
-    "slug": "app",
+    "name": "EMS-BPATCSC",
+    "slug": "EMS-BPATCSC",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "easyresultbd",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -27,7 +28,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "13dc8fb5-3c0d-4038-9c54-085b2d023f62"
+        "projectId": "62b115bc-0742-42c3-9e5b-31e0f29cb816"
       }
     },
     "plugins": []

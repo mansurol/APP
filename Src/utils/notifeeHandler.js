@@ -1,29 +1,32 @@
 import notifee from "@notifee/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 async function onMessageReceived(message) {
-  const { data } = message;
+    console.log("message", message);
 
-  const notifeeData = JSON.parse(data.notifee);
+    const { data } = message;
 
-  await notifee.createChannel({
-    id: "notifications",
-    name: "Order Status",
-    lights: true,
-  });
+    const notifeeData = JSON.parse(data.notifee);
 
-  await notifee.displayNotification({
-    title: notifeeData.title,
-    body: notifeeData.body,
+    await notifee.createChannel({
+        id: "notifications",
+        name: "Order Status",
+        lights: true,
+    });
 
-    android: {
-      channelId: "notifications",
-      pressAction: {
-        id: "default",
-        launchActivity: "com.easyresultbd.app.MainActivity",
-      },
-    },
-    data: notifeeData?.data, // data to send to onNotificationOpenedApp
-  });
+    await notifee.displayNotification({
+        title: notifeeData.title,
+        body: notifeeData.body,
+
+        android: {
+            channelId: "notifications",
+            pressAction: {
+                id: "default",
+                launchActivity: "com.easyresultbd.app.MainActivity",
+            },
+        },
+        data: notifeeData?.data, // data to send to onNotificationOpenedApp
+    });
 }
 
 export default onMessageReceived;

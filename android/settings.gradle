@@ -1,4 +1,4 @@
-rootProject.name = 'app'
+rootProject.name = 'EMS-BPATCSC'
 
 dependencyResolutionManagement {
   versionCatalogs {

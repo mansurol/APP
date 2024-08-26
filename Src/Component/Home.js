@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,9 +9,26 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
+import notifee, { EventType } from "@notifee/react-native";
+import * as Linking from "expo-linking";
 
 const Home = () => {
   const [webViewUrl, setWebViewUrl] = useState(null);
+
+  useEffect(() => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      console.log("type", type);
+      if (EventType.PRESS === type) {
+        Linking.openURL("easyresultbd://notice");
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    Linking.addEventListener("url", ({ url }) => {
+      console.log("url", url);
+    });
+  }, []);
 
   const handlePress = (url) => {
     setWebViewUrl(url);

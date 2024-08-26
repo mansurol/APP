@@ -1,57 +1,100 @@
-import React, { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import messaging from "@react-native-firebase/messaging";
 import { NavigationContainer } from "@react-navigation/native";
+import * as Linking from "expo-linking";
 import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
 import { enableScreens } from "react-native-screens";
 import TabNav from "./Navigation/TabNav";
 import onMessageReceived from "./Src/utils/notifeeHandler";
-import messaging from "@react-native-firebase/messaging";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import notifee from "@notifee/react-native";
 
 SplashScreen.preventAutoHideAsync();
 enableScreens();
 
-messaging().setBackgroundMessageHandler(onMessageReceived);
+messaging().setBackgroundMessageHandler(async (msz) => {
+    console.log("msz", msz);
+    await AsyncStorage.setItem("notificationData", "notice");
+
+    await onMessageReceived(msz);
+
+    return Promise.resolve();
+});
+
+notifee.onBackgroundEvent(({ type, detail }) => {
+    console.log("type", type);
+});
+
+const prefixes = [
+    Linking.createURL("/"),
+    Linking.createURL("easyresultbd://"),
+    Linking.createURL("easyresultbd://notice"),
+];
+
+const config = {
+    screens: {
+        Notice: {
+            path: "notice",
+        },
+    },
+};
+
+const linking = {
+    prefixes,
+    config,
+};
 
 export default function App() {
-  const [appIsReady, setAppIsReady] = useState(false);
+    const navigationRef = React.createRef();
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        // Additional resource loading or API calls can be done here
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage((msz) => {
+            onMessageReceived(msz);
+            return Promise.resolve();
+        });
 
-        // Simulate a loading delay
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setAppIsReady(true);
-        await SplashScreen.hideAsync();
-      }
-    }
+        return unsubscribe;
+    }, []);
 
-    prepare();
-  }, []);
+    useEffect(() => {
+        const handleRedirect = async (event) => {
+            const hasRedirect = await AsyncStorage.getItem("notificationData");
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(onMessageReceived);
+            console.log("hasRedirect", hasRedirect);
 
-    return unsubscribe;
-  }, []);
+            if (hasRedirect == "notice") {
+                await AsyncStorage.removeItem("notificationData");
+                navigationRef.current?.navigate("Notice");
+            }
+        };
 
-  return (
-    <NavigationContainer>
-      <TabNav />
-    </NavigationContainer>
-  );
+        const timeout = setTimeout(() => {
+            handleRedirect();
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
+    return (
+        <NavigationContainer
+            linking={linking}
+            ref={navigationRef}
+            onReady={async () => {
+                await SplashScreen.hideAsync();
+            }}
+        >
+            <TabNav />
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
