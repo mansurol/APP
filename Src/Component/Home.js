@@ -13,8 +13,9 @@ import { WebView } from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
 import notifee, { EventType } from "@notifee/react-native";
 import * as Linking from "expo-linking";
-
+import { useNavigation } from "@react-navigation/native";
 const Home = () => {
+  const navigation = useNavigation();
   const [webViewUrl, setWebViewUrl] = useState(null);
   const [isAdminVisible, setIsAdminVisible] = useState(false);
   useEffect(() => {
