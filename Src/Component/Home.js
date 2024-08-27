@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  Platform,
+  TouchableWithoutFeedback
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +16,7 @@ import * as Linking from "expo-linking";
 
 const Home = () => {
   const [webViewUrl, setWebViewUrl] = useState(null);
-
+  const [isAdminVisible, setIsAdminVisible] = useState(false);
   useEffect(() => {
     return notifee.onForegroundEvent(({ type, detail }) => {
       console.log("type", type);
@@ -33,6 +35,13 @@ const Home = () => {
   const handlePress = (url) => {
     setWebViewUrl(url);
   };
+  const handleBackPress = () => {
+    console.log("Back button pressed"); // For debugging purposes
+    setWebViewUrl(null);
+  };
+  const handleTouchTop = () => {
+    setIsAdminVisible(true);
+  };
 
   const renderWebView = () => {
     if (webViewUrl) {
@@ -46,7 +55,18 @@ const Home = () => {
       <StatusBar barStyle="light-content" backgroundColor="#11025F" />
       {!webViewUrl ? (
         <View style={styles.container}>
-          {/* Card 3: Online Payment */}
+          {/* Hidden admin button that appears when touched */}
+          {isAdminVisible && (
+            <TouchableOpacity
+              style={styles.cards}
+              onPress={() =>
+                handlePress("https://easyresult.easytechsolution.org/")
+              }
+            >
+              <Text style={styles.cardText}>Admin</Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -67,8 +87,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Admission{"\n"}Form</Text>
           </TouchableOpacity>
-
-          {/* Card 5: Online Result */}
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -77,8 +95,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Online{"\n"}Result</Text>
           </TouchableOpacity>
-
-          {/* Card 4: Online Admission */}
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -89,8 +105,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>School{"\n"}Admission</Text>
           </TouchableOpacity>
-          {/* Card 1: Student Login */}
-
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -101,7 +115,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Student{"\n"}Login</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -112,8 +125,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>College{"\n"}Admission</Text>
           </TouchableOpacity>
-
-          {/* Card 2: Teacher Login */}
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -124,7 +135,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Teacher{"\n"}Login</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -135,7 +145,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Teacher &{"\n"}Staff</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -146,7 +155,6 @@ const Home = () => {
           >
             <Text style={styles.cardText}>Alumni</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -159,24 +167,22 @@ const Home = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.card}
-            onPress={() => handlePress("https://bpatcsc.org/pages/notice")}
+            onPress={() => navigation.navigate("Notice")}
           >
             <Text style={styles.noticeBoardText}>Notice{"\n"}Board</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.card}
             onPress={() => handlePress("https://www.bpatcsc.org/")}
           >
             <Text style={styles.noticeBoardText}>Details{"\n"}More</Text>
           </TouchableOpacity>
-          {/* New Card: Notice Board */}
         </View>
       ) : (
         <View style={{ flex: 1 }}>
           <View style={styles.header}>
             <TouchableOpacity
-              onPress={() => setWebViewUrl(null)}
+              onPress={handleBackPress}
               style={styles.backButton}
             >
               <Ionicons name="arrow-back" size={24} color="white" />
@@ -186,48 +192,64 @@ const Home = () => {
           {renderWebView()}
         </View>
       )}
+      {!webViewUrl && (
+        <Text style={styles.footerText}>
+          POWERED BY {"\n"} EASYTECHSOLUTION
+        </Text>
+      )}
+
+      {/* Touchable area at the top to reveal the hidden button */}
+      <TouchableWithoutFeedback onPress={handleTouchTop}>
+        <View style={styles.touchableTop} />
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row", // Arrange children horizontally
-    flexWrap: "wrap", // Wrap cards to the next line if they exceed the width
+    flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingTop: 20, // Add some top padding for better spacing
-    paddingBottom: 20, // Adjust bottom padding if necessary
+    paddingTop: Platform.OS === "android" ? 60 : 20,
+    paddingBottom: 20,
   },
   card: {
-    width: "45%",
-    aspectRatio: 1.3,
+    width: "48%",
+    aspectRatio: 1.5,
     backgroundColor: "#ffffff",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 5, // Reduced margin vertical to minimize bottom padding
-    elevation: 3, // for Android
-    shadowColor: "#000000", // for iOS
+    marginVertical: 5,
+    elevation: 3,
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
   },
-  noticeBoardCard: {
+  cards: {
     width: "100%",
-    aspectRatio: 4,
     backgroundColor: "#ffffff",
+    padding: 20,
     borderRadius: 8,
-    height: 8,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center",
-    elevation: 3, // for Android
-    shadowColor: "#000000", // for iOS
+    marginVertical: 3,
+    elevation: 3,
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
-    marginBottom: 25,
+  },
+  touchableTop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 50,
+    zIndex: 1,
   },
   cardText: {
     fontSize: 18,
@@ -243,18 +265,31 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#11025F",
     justifyContent: "center",
-    alignItems: "left",
+    alignItems: "flex-start",
+    zIndex: 10,
+    elevation: 3,
   },
   backButton: {
     flexDirection: "row",
-    alignItems: "left",
+    alignItems: "center",
     paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   headerText: {
     color: "#fff",
     fontSize: 18,
-    marginLeft: 5, // Adjust spacing between icon and text
+    marginLeft: 5,
+  },
+  footerText: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    padding: 10,
+    paddingBottom: 10,
+    textAlign: "right",
+    color: "gray",
   },
 });
+
 
 export default Home;
