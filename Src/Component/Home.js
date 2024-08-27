@@ -36,7 +36,7 @@ const Home = () => {
     setWebViewUrl(url);
   };
   const handleBackPress = () => {
-    console.log("Back button pressed"); // For debugging purposes
+    console.log("Back button pressed"); 
     setWebViewUrl(null);
   };
   const handleTouchTop = () => {
