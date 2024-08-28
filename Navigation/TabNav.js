@@ -1,23 +1,108 @@
-import { Ionicons } from "@expo/vector-icons"; // Import icons
+import React, { useEffect } from "react";
+import { View, TouchableOpacity, Image, Alert, StatusBar } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons"; 
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import messaging from "@react-native-firebase/messaging";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import axios from "axios";
-import React, { useEffect } from "react";
-import { Alert, StatusBar } from "react-native"; // Import StatusBar
 import DeviceInfo from "react-native-device-info";
-import Home from "../Src/Component/Home";
-import StackNav from "./StackNav";
+import axios from "axios";
+import Home from "../Src/Component/Home"; 
+import StackNav from "./StackNav"; 
 
 const Tab = createBottomTabNavigator();
+
+const CustomTabBar = ({ state, descriptors, navigation }) => {
+    return (
+        <View
+            style={{
+                flexDirection: "row",
+                backgroundColor: "#fff",
+                height: 60,
+                shadowOffset: { width: 0, height: 10 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.5,
+                elevation: 5,
+            }}
+        >
+            {state.routes.map((route, index) => {
+                const { options } = descriptors[route.key];
+                const isFocused = state.index === index;
+
+                const onPress = () => {
+                    const event = navigation.emit({
+                        type: "tabPress",
+                        target: route.key,
+                        canPreventDefault: true,
+                    });
+
+                    if (!isFocused && !event.defaultPrevented) {
+                        navigation.navigate(route.name);
+                    }
+                };
+
+                const onLongPress = () => {
+                    navigation.emit({
+                        type: "tabLongPress",
+                        target: route.key,
+                    });
+                };
+
+                // Custom middle button with logo
+                if (route.name === "MiddleButton") {
+                    return (
+                        <TouchableOpacity
+                            key={index}
+                            onPress={onPress}
+                            onLongPress={onLongPress}
+                            style={{
+                               
+                                justifyContent: "center",
+                                alignItems: "center",
+                                top: -30,
+                                width: 70,
+                                height: 70,
+                                borderRadius: 100,
+                                backgroundColor: "#11025F",
+                            }}
+                        >
+                            <Image
+                                source={require("../assets/logo.png")} 
+                                style={{ width: 50, height: 50 }}
+                            />
+                        </TouchableOpacity>
+                    );
+                }
+
+              
+                return (
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityState={isFocused ? { selected: true } : {}}
+                        accessibilityLabel={options.tabBarAccessibilityLabel}
+                        testID={options.tabBarTestID}
+                        onPress={onPress}
+                        onLongPress={onLongPress}
+                        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+                        key={index}
+                    >
+                        <Ionicons
+                            name={options.tabBarIcon({ focused: isFocused })}
+                            size={24}
+                            color={isFocused ? "#11025F" : "gray"}
+                        />
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
+    );
+};
 
 const TabNav = () => {
     useEffect(() => {
         const checkNotificationPermission = async () => {
             try {
                 const deviceUniqueId = await DeviceInfo.getUniqueId();
-                
                 const localToken = await AsyncStorage.getItem("fcmToken");
 
                 if (!localToken) {
@@ -72,42 +157,24 @@ const TabNav = () => {
 
     return (
         <>
-            <StatusBar
-                barStyle="light-content" // Set text color for the status bar
-                backgroundColor="#11025F" // Set background color for the status bar
-            />
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === "Home") {
-                            iconName = focused ? "home" : "home-outline";
-                        } else if (route.name === "Notice") {
-                            iconName = focused
-                                ? "notifications"
-                                : "notifications-outline";
-                        }
-                        return (
-                            <Ionicons
-                                name={iconName}
-                                size={size}
-                                color={color}
-                            />
-                        );
-                    },
-                    tabBarActiveTintColor: "#11025F",
-                    tabBarInactiveTintColor: "gray",
-                    tabBarStyle: { display: "flex" },
-                    tabBarShowLabel: false, // Hide the tab bar labels
-                })}
-            >
+            <StatusBar barStyle="light-content" backgroundColor="#11025F" />
+            <Tab.Navigator tabBar={(props) => <CustomTabBar {...props} />}>
                 <Tab.Screen
                     name="Home"
                     component={Home}
                     options={{
-                        headerStyle: { backgroundColor: "#11025F" }, // Change header background color
-                        headerTintColor: "#fff", // Change header text and icon color
-                        headerTitle: null, // Hide the header title
+                        tabBarIcon: ({ focused }) => (focused ? "home" : "home-outline"),
+                        headerStyle: { backgroundColor: "#11025F" },
+                        headerTintColor: "#fff",
+                        headerTitle: null,
+                        headerShown: false,
+                    }}
+                />
+                <Tab.Screen
+                    name="MiddleButton"
+                    component={Home} 
+                    options={{
+                        tabBarButton: () => null, 
                         headerShown: false,
                     }}
                 />
@@ -115,9 +182,11 @@ const TabNav = () => {
                     name="Notice"
                     component={StackNav}
                     options={{
-                        headerStyle: { backgroundColor: "#11025F" }, // Change header background color
-                        headerTintColor: "#fff", // Change header text and icon color
-                        headerTitle: null, // Hide the header title
+                        tabBarIcon: ({ focused }) =>
+                            focused ? "notifications" : "notifications-outline",
+                        headerStyle: { backgroundColor: "#11025F" },
+                        headerTintColor: "#fff",
+                        headerTitle: null,
                         headerShown: false,
                     }}
                 />
@@ -127,3 +196,4 @@ const TabNav = () => {
 };
 
 export default TabNav;
+

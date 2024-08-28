@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Notices = () => {
   const [notices, setNotices] = useState([]);
-  const [loading, setLoading] = useState(true); // State for loading indicator
+  const [loading, setLoading] = useState(true); 
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -26,10 +26,10 @@ const Notices = () => {
         "https://liveclass.bpatcsc.org/api-bpatcsc-notice.php"
       );
       setNotices(response.data);
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching notices:", error);
-      setLoading(false); // Handle error by setting loading to false
+      setLoading(false); 
     }
   };
 
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     marginBottom: 15,
-    elevation: 3, // for Android
-    shadowColor: "#000000", // for iOS
+    elevation: 3, 
+    shadowColor: "#000000", 
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
